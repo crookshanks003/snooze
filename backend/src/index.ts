@@ -3,6 +3,10 @@ import cors from "cors";
 import helmet from "helmet";
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
+import { checkConfig } from "./config";
+import passport from "passport";
+
+import { AuthModule } from "./modules/auth/auth.module";
 
 dotenv.config();
 
@@ -25,10 +29,19 @@ function main() {
 	app.use(cors());
 	app.use(helmet());
 	app.use(express.json());
+	app.use(passport.initialize());
 
-	app.get("/", (_, res) => {
+	checkConfig();
+
+	AuthModule.setupJwtAuth();
+	AuthModule.setupGoogleAuth();
+
+	app.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
+		console.log(req.user);
 		res.send("Hello world");
 	});
+
+	app.use("/login", AuthModule.authRouter);
 
 	app.listen(5000, () => {
 		console.log("Server started");
