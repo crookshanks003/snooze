@@ -4,6 +4,7 @@ export interface User {
 	googleId: string;
 	registered_at: Date;
 	provider: string;
+	image?: string;
 }
 
 export interface CreateUser {
@@ -11,4 +12,5 @@ export interface CreateUser {
 	email?: string;
 	googleId: string;
 	provider: string;
+	image?: string;
 }

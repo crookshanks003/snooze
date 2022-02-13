@@ -16,14 +16,19 @@ export function setupGoogleAuth() {
 					const existingUser = await findByGoogleId(profile.id);
 					if (!existingUser) {
 						let email: string | undefined = undefined;
+						let image: string | undefined = undefined;
 						if (profile.emails && profile.emails.length > 0) {
 							email = profile.emails[0].value;
+						}
+						if (profile.photos && profile.photos.length > 0) {
+							image = profile.photos[0].value;
 						}
 						const newUser = await createUser({
 							name: profile.displayName,
 							email,
 							googleId: profile.id,
 							provider: profile.provider,
+							image,
 						});
 						return cb(null, newUser);
 					}

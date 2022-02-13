@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema<User>({
 		type: Date,
 		dafault: Date.now,
 	},
+	image: {
+		type: String,
+		required: false,
+	}
 });
 
 export const UserModel = mongoose.model<User>("User", userSchema);
