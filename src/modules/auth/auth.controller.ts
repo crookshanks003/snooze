@@ -1,13 +1,15 @@
 import { Router } from "express";
 import passport from "passport";
-import jwt from "jsonwebtoken";
-import { config } from "../../config";
+import { AuthService } from "./auth.service";
 
 export const authRouter = Router();
 
 authRouter.get(
 	"/google",
-	passport.authenticate("google", { session: false, scope: ["profile", "email"] }),
+	passport.authenticate("google", {
+		session: false,
+		scope: ["profile", "email"],
+	}),
 );
 
 authRouter.get(
@@ -18,15 +20,7 @@ authRouter.get(
 		session: false,
 	}),
 	(req: any, res) => {
-		res.status(200).json({ token: getJwtToken(req.user.googleId) });
+		const token = AuthService.getJwtToken(req.user.googleId);
+		res.redirect(`http://localhost:3000/callback?token=${token}`);
 	},
 );
-
-function getJwtToken(userId: string) {
-	return jwt.sign(
-		{
-			sub: userId,
-		},
-		config.JWT_SECRET,
-	);
-}

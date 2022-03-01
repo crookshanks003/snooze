@@ -2,19 +2,15 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import mongoose from "mongoose";
-import * as dotenv from "dotenv";
-import { checkConfig } from "./config";
-import passport from "passport";
-
-import { AuthModule } from "./modules/auth/auth.module";
-
-dotenv.config();
+import { checkConfig, config } from "./config";
+import { createApp } from "./app";
 
 function connectDb() {
-	const mongoUri = process.env.MONGO_URI;
+	checkConfig();
+	const mongoUri = config.MONGO_URI;
 
 	mongoose
-		.connect(mongoUri!)
+		.connect(mongoUri)
 		.then(() => {
 			console.log("Database connected");
 		})
@@ -24,27 +20,14 @@ function connectDb() {
 }
 
 function main() {
-	const app = express();
+	const app = createApp();
 
 	app.use(cors());
 	app.use(helmet());
 	app.use(express.json());
-	app.use(passport.initialize());
-
-	checkConfig();
-
-	AuthModule.setupJwtAuth();
-	AuthModule.setupGoogleAuth();
-
-	app.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
-		console.log(req.user);
-		res.send("Hello world");
-	});
-
-	app.use("/login", AuthModule.authRouter);
 
 	app.listen(5000, () => {
-		console.log("Server started");
+		console.log("Server started at port 5000");
 	});
 }
 

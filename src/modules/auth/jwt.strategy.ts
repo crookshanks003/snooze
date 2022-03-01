@@ -1,7 +1,6 @@
 import passport from "passport";
 import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt";
 import { config } from "../../config";
-// import { findByGoogleId } from "./auth.service";
 
 export function setupJwtAuth() {
 	const jwtOptions = {

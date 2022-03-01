@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { config } from "../../config";
-import { createUser, findByGoogleId } from "./auth.service";
+import { AuthService } from "./auth.service";
 
 export function setupGoogleAuth() {
 	passport.use(
@@ -9,11 +9,11 @@ export function setupGoogleAuth() {
 			{
 				clientID: config.GOOGLE_CLIENT_ID,
 				clientSecret: config.GOOGLE_CLIENT_SECRET,
-				callbackURL: "/login/callback",
+				callbackURL: "/auth/callback",
 			},
 			async (_accessToken, _refreshToken, profile, cb) => {
 				try {
-					const existingUser = await findByGoogleId(profile.id);
+					const existingUser = await AuthService.findByGoogleId(profile.id);
 					if (!existingUser) {
 						let email: string | undefined = undefined;
 						let image: string | undefined = undefined;
@@ -23,7 +23,7 @@ export function setupGoogleAuth() {
 						if (profile.photos && profile.photos.length > 0) {
 							image = profile.photos[0].value;
 						}
-						const newUser = await createUser({
+						const newUser = await AuthService.createUser({
 							name: profile.displayName,
 							email,
 							googleId: profile.id,
