@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request } from "express";
 import passport from "passport";
 import { AuthService } from "./auth.service";
 
@@ -15,12 +15,20 @@ authRouter.get(
 authRouter.get(
 	"/callback",
 	passport.authenticate("google", {
-		failureRedirect: "http://localhost:3000/login",
-		failureMessage: true,
+		failureRedirect: "http://localhost:3000",
 		session: false,
 	}),
 	(req: any, res) => {
 		const token = AuthService.getJwtToken(req.user.googleId);
-		res.redirect(`http://localhost:3000/callback?token=${token}`);
+		res.cookie("jwt", token, {
+			httpOnly: true,
+			expires: new Date(Date.now() + 7 * 24 * 3600 * 1000),
+			// secure: false,
+		});
+		res.redirect(302, "http://localhost:3000/");
 	},
 );
+
+// authRouter.get("/profile", (req, res) => {
+
+// })

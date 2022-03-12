@@ -12,10 +12,31 @@ export function createApp() {
 	AuthModule.exports.setupGoogleAuth();
 	AuthModule.exports.setupJwtAuth();
 
-	app.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
-		console.log(req.user);
-		res.send("Hello world");
-	});
+	app.get(
+		"/",
+		(req, res, next) => {
+			passport.authenticate(
+				"jwt",
+				{ session: false },
+				(err, _user, info: any) => {
+					if (info instanceof Error) {
+						res.status(401).send({
+							error: { message: info.message },
+						});
+					} else if (err) {
+						res.status(401).send({
+							error: { message: "Invalid token" },
+						});
+					} else {
+						next();
+					}
+				},
+			)(req, res, next);
+		},
+		(req, res) => {
+			res.send("Hello world");
+		},
+	);
 
 	//mapping routes
 	modules.forEach((mod) => {
