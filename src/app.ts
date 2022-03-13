@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { AuthModule } from "./modules/auth/auth.module";
 import { ModuleType } from "./types/module.type";
 import { authMiddleware } from "./utils/auth.middleware";
+import bodyParser from "body-parser";
 
 export function createApp() {
 	const modules: ModuleType<any, any>[] = [AuthModule];
@@ -14,6 +15,8 @@ export function createApp() {
 	app.use(cors({ credentials: true, origin:"http://localhost:3000"}));
 	app.use(helmet())
 	app.use(cookieParser());
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded());
 	app.use(express.json());
 
 	app.use(passport.initialize());

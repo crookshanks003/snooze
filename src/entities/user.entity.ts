@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { User } from "src/types";
+import { SleepStatus, User } from "../types";
 
 const userSchema = new mongoose.Schema<User>({
 	name: {
@@ -20,6 +20,15 @@ const userSchema = new mongoose.Schema<User>({
 	image: {
 		type: String,
 		required: false,
+	},
+	roomNumber: {
+		type: Number,
+		default: 343,
+	},
+	sleepStatus: {
+		type: String,
+		enum: SleepStatus,
+		default: SleepStatus.awake,
 	},
 });
 

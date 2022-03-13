@@ -1,7 +1,7 @@
 import { config } from "../../config";
 import jwt from "jsonwebtoken";
 import { UserModel } from "../../entities";
-import { CreateUser } from "../../types";
+import { CreateUser, SleepStatus } from "../../types";
 
 export const AuthService = {
 	findByGoogleId(googleId: string) {
@@ -21,4 +21,12 @@ export const AuthService = {
 			config.JWT_SECRET,
 		);
 	},
+
+	getAllUsers() {
+		return UserModel.find({}).sort({roomNumber: 1});
+	},
+
+	changeSleepStatus(googleId: string, sleepStatus: SleepStatus) {
+		return UserModel.findOneAndUpdate({googleId}, {sleepStatus});
+	}
 };

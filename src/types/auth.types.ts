@@ -1,3 +1,8 @@
+export enum SleepStatus {
+	awake="awake",
+	asleep="asleep",
+}
+
 export interface User {
 	name: string;
 	email?: string;
@@ -5,6 +10,8 @@ export interface User {
 	registered_at: Date;
 	provider: string;
 	image?: string;
+	roomNumber: number;
+	sleepStatus: SleepStatus;
 }
 
 export interface CreateUser {
