@@ -1,20 +1,16 @@
-import passport from "passport";
+import passport  from "passport";
 import {
 	JwtFromRequestFunction,
 	Strategy as JWTStrategy,
 	StrategyOptions,
 } from "passport-jwt";
 import { config } from "../../config";
+import { AuthService } from "./auth.service";
 
 const jwtFromCookie: JwtFromRequestFunction = (req) => {
 	let token: string | null = null;
-	let cookies: { [key: string]: string } = {};
-	if (req.headers.cookie) {
-		req.headers.cookie.split(";").forEach((cookie) => {
-			const [name, value] = cookie.split("=");
-			cookies[name] = value;
-		});
-		token = cookies["jwt"];
+	if(req && req.cookies) {
+		token = req.cookies["jwt"];
 	}
 	return token;
 };
@@ -26,11 +22,15 @@ export function setupJwtAuth() {
 	};
 
 	passport.use(
-		new JWTStrategy(jwtOptions, (payload, done) => {
+		new JWTStrategy(jwtOptions, async (payload, done) => {
 			if (!payload.sub) {
 				done({ error: "Invalid token" });
 			}
-			return done(null, payload.sub, payload);
+			const user = await AuthService.findByGoogleId(payload.sub);
+			if (!user){
+				return done({error: {message: "Invalid user token"}});
+			}
+			return done(null, user, payload);
 		}),
 	);
 }

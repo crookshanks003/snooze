@@ -1,11 +1,20 @@
 import express from "express";
+import cors from "cors";
+import helmet from "helmet";
 import passport from "passport";
+import cookieParser from "cookie-parser";
 import { AuthModule } from "./modules/auth/auth.module";
 import { ModuleType } from "./types/module.type";
+import { authMiddleware } from "./utils/auth.middleware";
 
 export function createApp() {
 	const modules: ModuleType<any, any>[] = [AuthModule];
 	const app = express();
+
+	app.use(cors({ credentials: true, origin:"http://localhost:3000"}));
+	app.use(helmet())
+	app.use(cookieParser());
+	app.use(express.json());
 
 	app.use(passport.initialize());
 
@@ -13,27 +22,10 @@ export function createApp() {
 	AuthModule.exports.setupJwtAuth();
 
 	app.get(
-		"/",
-		(req, res, next) => {
-			passport.authenticate(
-				"jwt",
-				{ session: false },
-				(err, _user, info: any) => {
-					if (info instanceof Error) {
-						res.status(401).send({
-							error: { message: info.message },
-						});
-					} else if (err) {
-						res.status(401).send({
-							error: { message: "Invalid token" },
-						});
-					} else {
-						next();
-					}
-				},
-			)(req, res, next);
-		},
+		"/test",
+		authMiddleware,
 		(req, res) => {
+			console.log(req.user);
 			res.send("Hello world");
 		},
 	);
