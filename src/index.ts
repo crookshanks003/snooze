@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { checkConfig, config } from "./config";
 import { createApp } from "./app";
+import { createServer } from "http";
+import { AuthGateway } from "./modules/auth/auth.gateway";
 
 function connectDb() {
 	checkConfig();
@@ -19,7 +21,10 @@ function connectDb() {
 function main() {
 	const app = createApp();
 
-	app.listen(5000, () => {
+	const server = createServer(app);
+	AuthGateway.createServer(server);
+
+	server.listen(5000, () => {
 		console.log("Server started at port 5000");
 	});
 }

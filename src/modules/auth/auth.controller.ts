@@ -3,6 +3,7 @@ import { ParamsDictionary, Query } from "express-serve-static-core";
 import passport from "passport";
 import { SleepStatus, User } from "src/types";
 import { authMiddleware } from "../../utils/auth.middleware";
+import { AuthGateway } from "./auth.gateway";
 import { AuthService } from "./auth.service";
 
 /* ---'/auth'--- */
@@ -56,6 +57,7 @@ authRouter.post(
 				.status(500)
 				.send({ error: { message: "Can't change status right now" } });
 		}
+		AuthGateway.broadcastStatus(req.body.sleepStatus, user.googleId);
 		return res.send(user);
 	},
 );

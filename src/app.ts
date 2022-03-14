@@ -7,6 +7,8 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { ModuleType } from "./types/module.type";
 import { authMiddleware } from "./utils/auth.middleware";
 import bodyParser from "body-parser";
+import { AuthGateway } from "./modules/auth/auth.gateway";
+import { SleepStatus } from "./types";
 
 export function createApp() {
 	const modules: ModuleType<any, any>[] = [AuthModule];
@@ -26,9 +28,8 @@ export function createApp() {
 
 	app.get(
 		"/test",
-		authMiddleware,
-		(req, res) => {
-			console.log(req.user);
+		// authMiddleware,
+		(_req, res) => {
 			res.send("Hello world");
 		},
 	);
