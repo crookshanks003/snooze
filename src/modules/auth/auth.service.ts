@@ -28,5 +28,9 @@ export const AuthService = {
 
 	changeSleepStatus(googleId: string, sleepStatus: SleepStatus) {
 		return UserModel.findOneAndUpdate({googleId}, {sleepStatus});
+	},
+
+	changeRoomNumber: (googleId: string, roomNumber: number) => {
+		return UserModel.findOneAndUpdate({googleId}, {roomNumber});
 	}
 };

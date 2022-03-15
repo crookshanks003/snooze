@@ -6,10 +6,12 @@ import { AuthService } from "./auth.service";
 export class AuthGateway {
 	static io: SocketServer;
 	//just for the sake of it
-	private static connectedClients: {[key: string]: Socket} = {};
+	private static connectedClients: { [key: string]: Socket } = {};
 
 	static createServer(server: Server) {
-		this.io = new SocketServer(server);
+		this.io = new SocketServer(server, {
+			cors: { origin: "http://localhost:3000" },
+		});
 		this.handleConnection();
 	}
 
@@ -30,11 +32,17 @@ export class AuthGateway {
 				return;
 			}
 			this.connectedClients[googleid] = socket;
+
+			socket.on(
+				"message",
+				({ message, user }: { message: string; user: string }) => {
+					socket.broadcast.emit("message", { message, user });
+				},
+			);
 		});
 	}
 
-	static broadcastStatus(status: SleepStatus, googleid: string){
-		console.log("Sending status");
-		this.io.emit("status", status);
+	static broadcastStatus(status: SleepStatus, googleid: string) {
+		this.io.emit("status", { googleid, status });
 	}
 }

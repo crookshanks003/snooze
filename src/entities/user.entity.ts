@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema<User>({
 	},
 	roomNumber: {
 		type: Number,
-		default: 343,
+		default: 0,
 	},
 	sleepStatus: {
 		type: String,

@@ -43,6 +43,18 @@ authRouter.get("/all", authMiddleware, async (req, res) => {
 	res.send(users);
 });
 
+authRouter.post("/room", authMiddleware, async (req, res) => {
+	const user = await AuthService.changeRoomNumber(
+		//@ts-ignore
+		req.user.googleId,
+		req.body.roomNumber,
+	);
+	if(!user) {
+		return res.status(500).send({error: {message: "something went wrong"}});
+	}
+	return res.send(user);
+});
+
 authRouter.post(
 	"/status",
 	authMiddleware,
