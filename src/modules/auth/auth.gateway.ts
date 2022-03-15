@@ -1,12 +1,12 @@
 import { Server } from "http";
-import { Server as SocketServer, Socket } from "socket.io";
-import { SleepStatus } from "src/types";
+import { Server as SocketServer } from "socket.io";
+import { SleepStatus, User } from "src/types";
 import { AuthService } from "./auth.service";
 
 export class AuthGateway {
 	static io: SocketServer;
-	//just for the sake of it
-	private static connectedClients: { [key: string]: Socket } = {};
+	//using socket.id for identification
+	private static connectedClients: { id: string; user: User }[] = [];
 
 	static createServer(server: Server) {
 		this.io = new SocketServer(server, {
@@ -31,7 +31,9 @@ export class AuthGateway {
 				socket.disconnect();
 				return;
 			}
-			this.connectedClients[googleid] = socket;
+			this.io.to(socket.id).emit("connectedusers", this.connectedClients);
+			this.connectedClients.push({ id: socket.id, user });
+			socket.broadcast.emit("newuser", { id: socket.id, user });
 
 			socket.on(
 				"message",
@@ -39,6 +41,13 @@ export class AuthGateway {
 					socket.broadcast.emit("message", { message, user });
 				},
 			);
+
+			socket.on("disconnect", () => {
+				this.connectedClients = this.connectedClients.filter(
+					(client) => client.id !== socket.id,
+				);
+				socket.broadcast.emit("logout", socket.id);
+			});
 		});
 	}
 
