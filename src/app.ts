@@ -12,7 +12,16 @@ export function createApp() {
 	const modules: ModuleType<any, any>[] = [AuthModule, AlarmModule];
 	const app = express();
 
-	app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+	app.use(
+		cors({
+			credentials: true,
+			origin: [
+				"https://snooze-client-qtxc54wh9-crookshanks003.vercel.app",
+				"https://snooze-client.vercel.app",
+			],
+		}),
+	);
+	app.set("trust proxy", 1);
 	app.use(helmet());
 	app.use(cookieParser());
 	app.use(bodyParser.json());

@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema<User>({
 		type: [String],
 		enum: MealTime,
 		default: [MealTime.SNACKS],
-	}
+	},
 });
 
 export const UserModel = mongoose.model<User>("User", userSchema);

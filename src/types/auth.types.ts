@@ -4,10 +4,10 @@ export enum SleepStatus {
 }
 
 export enum MealTime {
-	DINNER="dinner",
-	LUNCH="lunch",
-	BREAKFAST="breakfast",
-	SNACKS="snacks"
+	DINNER = "dinner",
+	LUNCH = "lunch",
+	BREAKFAST = "breakfast",
+	SNACKS = "snacks",
 }
 
 export interface User {

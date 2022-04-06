@@ -34,7 +34,7 @@ export const AuthService = {
 		return UserModel.findOneAndUpdate({ googleId }, { roomNumber });
 	},
 
-	changeMealTime(googleId: string, mealTime: MealTime[]){
-		return UserModel.findOneAndUpdate({googleId}, {mealTime})
+	changeMealTime(googleId: string, mealTime: MealTime[]) {
+		return UserModel.findOneAndUpdate({ googleId }, { mealTime });
 	},
 };

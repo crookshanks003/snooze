@@ -21,17 +21,17 @@ authRouter.get(
 authRouter.get(
 	"/callback",
 	passport.authenticate("google", {
-		failureRedirect: "http://localhost:3000",
+		failureRedirect: "https://snooze-client.vercel.app/",
 		session: false,
 	}),
 	(req: any, res) => {
 		const token = AuthService.getJwtToken(req.user.googleId);
 		res.cookie("jwt", token, {
-			httpOnly: true,
+			// httpOnly: true,
 			expires: new Date(Date.now() + 7 * 24 * 3600 * 1000),
-			// secure: false,
+			// sameSite: "none",
 		});
-		res.redirect(302, "http://localhost:3000/");
+		res.redirect(302, "https://snooze-client.vercel.app/");
 	},
 );
 
@@ -51,9 +51,7 @@ authRouter.post("/room", authMiddleware, async (req, res) => {
 		req.body.roomNumber,
 	);
 	if (!user) {
-		return res
-			.status(500)
-			.send({ error: { message: "something went wrong" } });
+		return res.status(500).send({ error: { message: "something went wrong" } });
 	}
 	return res.send(user);
 });
@@ -68,9 +66,7 @@ authRouter.post(
 			req.body.sleepStatus,
 		);
 		if (!user) {
-			return res
-				.status(500)
-				.send({ error: { message: "Can't change status right now" } });
+			return res.status(500).send({ error: { message: "Can't change status right now" } });
 		}
 		AuthGateway.broadcastStatus(req.body.sleepStatus, user.googleId);
 		return res.send(user);
