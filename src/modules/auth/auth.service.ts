@@ -1,7 +1,7 @@
 import { config } from "../../config";
 import jwt from "jsonwebtoken";
 import { UserModel } from "../../entities";
-import { CreateUser, SleepStatus } from "../../types";
+import { CreateUser, MealTime, SleepStatus } from "../../types";
 
 export const AuthService = {
 	findByGoogleId(googleId: string) {
@@ -23,14 +23,18 @@ export const AuthService = {
 	},
 
 	getAllUsers() {
-		return UserModel.find({}).sort({roomNumber: 1});
+		return UserModel.find({}).sort({ roomNumber: 1 });
 	},
 
 	changeSleepStatus(googleId: string, sleepStatus: SleepStatus) {
-		return UserModel.findOneAndUpdate({googleId}, {sleepStatus});
+		return UserModel.findOneAndUpdate({ googleId }, { sleepStatus });
 	},
 
 	changeRoomNumber: (googleId: string, roomNumber: number) => {
-		return UserModel.findOneAndUpdate({googleId}, {roomNumber});
-	}
+		return UserModel.findOneAndUpdate({ googleId }, { roomNumber });
+	},
+
+	changeMealTime(googleId: string, mealTime: MealTime[]){
+		return UserModel.findOneAndUpdate({googleId}, {mealTime})
+	},
 };

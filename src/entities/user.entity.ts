@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { SleepStatus, User } from "../types";
+import { MealTime, SleepStatus, User } from "../types";
 
 const userSchema = new mongoose.Schema<User>({
 	name: {
@@ -30,6 +30,11 @@ const userSchema = new mongoose.Schema<User>({
 		enum: SleepStatus,
 		default: SleepStatus.awake,
 	},
+	mealTime: {
+		type: [String],
+		enum: MealTime,
+		default: [MealTime.SNACKS],
+	}
 });
 
 export const UserModel = mongoose.model<User>("User", userSchema);

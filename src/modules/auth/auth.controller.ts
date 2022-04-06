@@ -1,7 +1,8 @@
 import { Router, Request } from "express";
-import { ParamsDictionary, Query } from "express-serve-static-core";
 import passport from "passport";
-import { SleepStatus, User } from "src/types";
+import { resolve } from "path/posix";
+import { UserModel } from "src/entities";
+import { MealTime, SleepStatus } from "../../types";
 import { authMiddleware } from "../../utils/auth.middleware";
 import { AuthGateway } from "./auth.gateway";
 import { AuthService } from "./auth.service";
@@ -38,7 +39,7 @@ authRouter.get("/profile", authMiddleware, (req, res) => {
 	res.send(req.user);
 });
 
-authRouter.get("/all", authMiddleware, async (req, res) => {
+authRouter.get("/all", authMiddleware, async (_req, res) => {
 	const users = await AuthService.getAllUsers();
 	res.send(users);
 });
@@ -49,17 +50,19 @@ authRouter.post("/room", authMiddleware, async (req, res) => {
 		req.user.googleId,
 		req.body.roomNumber,
 	);
-	if(!user) {
-		return res.status(500).send({error: {message: "something went wrong"}});
+	if (!user) {
+		return res
+			.status(500)
+			.send({ error: { message: "something went wrong" } });
 	}
 	return res.send(user);
 });
 
 authRouter.post(
-	"/status",
+	"/sleep-status",
 	authMiddleware,
-	async (req: Request<{}, {}, { sleepStatus: SleepStatus }>, res) => {
-		let user = await AuthService.changeSleepStatus(
+	async (req: Request<any, any, { sleepStatus: SleepStatus }>, res) => {
+		const user = await AuthService.changeSleepStatus(
 			//@ts-ignore
 			req.user.googleId,
 			req.body.sleepStatus,
@@ -71,5 +74,18 @@ authRouter.post(
 		}
 		AuthGateway.broadcastStatus(req.body.sleepStatus, user.googleId);
 		return res.send(user);
+	},
+);
+
+authRouter.post(
+	"/meal-time",
+	authMiddleware,
+	async (req: Request<any, any, { mealTime: MealTime[] }>, res) => {
+		const user = await AuthService.changeMealTime(
+			//@ts-ignore
+			req.user.googleId,
+			req.body.mealTime,
+		);
+		res.send(user);
 	},
 );

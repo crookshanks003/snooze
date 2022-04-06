@@ -1,6 +1,6 @@
 import { Server } from "http";
 import { Server as SocketServer } from "socket.io";
-import { SleepStatus, User } from "src/types";
+import { SleepStatus, User } from "../../types";
 import { AuthService } from "./auth.service";
 
 export class AuthGateway {
@@ -35,12 +35,9 @@ export class AuthGateway {
 			this.connectedClients.push({ id: socket.id, user });
 			socket.broadcast.emit("newuser", { id: socket.id, user });
 
-			socket.on(
-				"message",
-				({ message, user }: { message: string; user: string }) => {
-					socket.broadcast.emit("message", { message, user });
-				},
-			);
+			socket.on("message", ({ message, user }: { message: string; user: string }) => {
+				socket.broadcast.emit("message", { message, user });
+			});
 
 			socket.on("disconnect", () => {
 				this.connectedClients = this.connectedClients.filter(

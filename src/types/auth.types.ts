@@ -1,6 +1,13 @@
 export enum SleepStatus {
-	awake="awake",
-	asleep="asleep",
+	awake = "awake",
+	asleep = "asleep",
+}
+
+export enum MealTime {
+	DINNER="dinner",
+	LUNCH="lunch",
+	BREAKFAST="breakfast",
+	SNACKS="snacks"
 }
 
 export interface User {
@@ -12,6 +19,7 @@ export interface User {
 	image?: string;
 	roomNumber: number;
 	sleepStatus: SleepStatus;
+	mealTime: MealTime[];
 }
 
 export interface CreateUser {
