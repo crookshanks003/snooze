@@ -16,8 +16,7 @@ export function createApp() {
 		cors({
 			credentials: true,
 			origin: [
-				"https://snooze-client-qtxc54wh9-crookshanks003.vercel.app",
-				"https://snooze-client.vercel.app",
+				"https://snooze-client.herokuapp.com/",
 				"http://localhost:3000"
 			],
 		}),
