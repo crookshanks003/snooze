@@ -1,7 +1,6 @@
 import { Router, Request } from "express";
 import passport from "passport";
-import { resolve } from "path/posix";
-import { UserModel } from "src/entities";
+import { config } from "../../config";
 import { MealTime, SleepStatus } from "../../types";
 import { authMiddleware } from "../../utils/auth.middleware";
 import { AuthGateway } from "./auth.gateway";
@@ -21,17 +20,13 @@ authRouter.get(
 authRouter.get(
 	"/callback",
 	passport.authenticate("google", {
-		failureRedirect: "https://snooze-client.vercel.app/",
+		failureRedirect: config.CLIENT_URL,
 		session: false,
 	}),
+	//TODO: make auth better?
 	(req: any, res) => {
 		const token = AuthService.getJwtToken(req.user.googleId);
-		res.cookie("jwt", token, {
-			// httpOnly: true,
-			expires: new Date(Date.now() + 7 * 24 * 3600 * 1000),
-			// sameSite: "none",
-		});
-		res.redirect(302, "https://snooze-client.vercel.app/");
+		res.redirect(302, `${config.CLIENT_URL}/callback?token=${token}`);
 	},
 );
 

@@ -1,4 +1,5 @@
 import { Server } from "http";
+import { config } from "../../config";
 import { Server as SocketServer } from "socket.io";
 import { SleepStatus, User } from "../../types";
 import { AuthService } from "./auth.service";
@@ -6,11 +7,12 @@ import { AuthService } from "./auth.service";
 export class AuthGateway {
 	static io: SocketServer;
 	//using socket.id for identification
+	//TODO: use redis for this
 	private static connectedClients: { id: string; user: User }[] = [];
 
 	static createServer(server: Server) {
 		this.io = new SocketServer(server, {
-			cors: { origin: "http://localhost:3000" },
+			cors: { origin: config.CLIENT_URL },
 		});
 		this.handleConnection();
 	}

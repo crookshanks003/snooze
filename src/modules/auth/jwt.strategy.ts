@@ -1,19 +1,32 @@
 import passport from "passport";
-import { JwtFromRequestFunction, Strategy as JWTStrategy, StrategyOptions } from "passport-jwt";
+import {
+	ExtractJwt,
+	JwtFromRequestFunction,
+	Strategy as JWTStrategy,
+	StrategyOptions,
+} from "passport-jwt";
 import { config } from "../../config";
 import { AuthService } from "./auth.service";
 
-const jwtFromCookie: JwtFromRequestFunction = (req) => {
+// const jwtFromCookie: JwtFromRequestFunction = (req) => {
+// 	let token: string | null = null;
+// 	if (req && req.cookies) {
+// 		token = req.cookies["jwt"];
+// 	}
+// 	return token;
+// };
+//
+const jwtFromHeader: JwtFromRequestFunction = (req) => {
 	let token: string | null = null;
-	if (req && req.cookies) {
-		token = req.cookies["jwt"];
+	if (req && req.headers["jwt"]) {
+		token = req.headers["jwt"] as string;
 	}
 	return token;
 };
 
 export function setupJwtAuth() {
 	const jwtOptions: StrategyOptions = {
-		jwtFromRequest: jwtFromCookie,
+		jwtFromRequest: jwtFromHeader,
 		secretOrKey: config.JWT_SECRET,
 	};
 

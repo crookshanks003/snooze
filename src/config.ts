@@ -9,6 +9,8 @@ export const config = {
 	GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID!,
 	GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET!,
 	JWT_SECRET: process.env.JWT_SECRET!,
+	ENV: process.env.ENV!,
+	CLIENT_URL: process.env.ENV === "dev" ? "http://localhost:3000" : "https://snooze-client.vercel.app"
 };
 
 export function checkConfig() {

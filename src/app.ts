@@ -18,6 +18,7 @@ export function createApp() {
 			origin: [
 				"https://snooze-client-qtxc54wh9-crookshanks003.vercel.app",
 				"https://snooze-client.vercel.app",
+				"http://localhost:3000"
 			],
 		}),
 	);
